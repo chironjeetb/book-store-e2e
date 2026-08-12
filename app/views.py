@@ -3,12 +3,12 @@
 import logging
 from pathlib import Path
 
-from fastapi import APIRouter, HTTPException, Request, status
+from fastapi import APIRouter, Depends, HTTPException, Request, status
 from fastapi.responses import HTMLResponse, RedirectResponse
 from jinja2 import Environment, FileSystemLoader, select_autoescape
 from sqlalchemy.orm import Session
 
-from app.database import SessionLocal
+from app.database import get_db
 from app.models import Book
 from app.schemas import BookCreate
 
@@ -27,15 +27,9 @@ jinja_env = Environment(
 )
 
 
-def get_db_session() -> Session:
-    """Get a database session."""
-    return SessionLocal()
-
-
 @router.get("/", response_class=HTMLResponse)
-async def home(request: Request) -> str:
+async def home(request: Request, db: Session = Depends(get_db)) -> str:
     """Render the home page with book listings."""
-    db = get_db_session()
     try:
         books = db.query(Book).all()
         template = jinja_env.get_template("index.html")
@@ -45,9 +39,8 @@ async def home(request: Request) -> str:
 
 
 @router.post("/books", response_class=RedirectResponse)
-async def add_book_form(request: Request) -> RedirectResponse:
+async def add_book_form(request: Request, db: Session = Depends(get_db)) -> RedirectResponse:
     """Handle book creation from web form."""
-    db = get_db_session()
     try:
         form_data = await request.form()
 
@@ -77,29 +70,23 @@ async def add_book_form(request: Request) -> RedirectResponse:
             status_code=status.HTTP_400_BAD_REQUEST,
             detail=f"Missing required field: {e}",
         ) from e
-    finally:
-        db.close()
 
     return RedirectResponse(url="/", status_code=status.HTTP_303_SEE_OTHER)
 
 
 @router.get("/books/{book_id}/delete", response_class=RedirectResponse)
-async def delete_book_form(book_id: int) -> RedirectResponse:
+async def delete_book_form(book_id: int, db: Session = Depends(get_db)) -> RedirectResponse:
     """Delete a book via form submission."""
-    db = get_db_session()
-    try:
-        book = db.query(Book).filter(Book.id == book_id).first()
-        if not book:
-            logger.warning(f"Book with id={book_id} not found for deletion")
-            raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND,
-                detail="Book not found",
-            )
+    book = db.query(Book).filter(Book.id == book_id).first()
+    if not book:
+        logger.warning(f"Book with id={book_id} not found for deletion")
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Book not found",
+        )
 
-        db.delete(book)
-        db.commit()
-        logger.info(f"Deleted book with id={book_id} via form")
-    finally:
-        db.close()
+    db.delete(book)
+    db.commit()
+    logger.info(f"Deleted book with id={book_id} via form")
 
     return RedirectResponse(url="/", status_code=status.HTTP_303_SEE_OTHER)
