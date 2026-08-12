@@ -3,9 +3,9 @@ requires = ["setuptools>=68.0", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "end_to_end_bookstore"
-version = "0.1.0"
-description = "End-to-end Python bookstore backend with UI and containerization"
+name = "book_store_e2e"
+version = "1.0.0"
+description = "A modern bookstore application with REST API, web UI, and comprehensive testing"
 readme = "README.md"
 requires-python = ">=3.11"
 dependencies = [
@@ -13,13 +13,68 @@ dependencies = [
     "uvicorn[standard]>=0.23.0",
     "sqlalchemy>=2.0.0",
     "pydantic>=2.0.0",
+    "pydantic-settings>=2.0.0",
     "jinja2>=3.0.0",
     "httpx>=0.28.0",
-    "pytest>=8.0.0"
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0.0",
+    "pytest-cov>=5.0.0",
+    "pytest-asyncio>=0.23.0",
+    "ruff>=0.1.0",
+    "black>=23.0.0",
+    "isort>=5.13.0",
+    "mypy>=1.7.0",
+    "bandit>=1.7.0",
+    "pip-audit>=2.6.0",
 ]
 
 [project.scripts]
 start = "app.main:run"
 
 [tool.black]
-line-length = 88
+line-length = 100
+target-version = ['py311']
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+select = ["E", "F", "W", "I", "N", "B", "A", "C4", "UP"]
+ignore = ["E501", "B008"]
+
+[tool.isort]
+profile = "black"
+line_length = 100
+
+[tool.mypy]
+python_version = "3.11"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = false
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-v --tb=short --cov=app --cov-report=html --cov-report=term"
+markers = [
+    "unit: unit tests",
+    "integration: integration tests",
+]
+
+[tool.coverage.run]
+branch = true
+source = ["app"]
+omit = [
+    "*/tests/*",
+    "*/venv/*",
+]
+
+[tool.coverage.report]
+exclude_lines = [
+    "pragma: no cover",
+    "def __repr__",
+    "raise AssertionError",
+    "raise NotImplementedError",
+    "if __name__ == .__main__.:",
+]
