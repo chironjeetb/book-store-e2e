@@ -1,0 +1,25 @@
+[build-system]
+requires = ["setuptools>=68.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "end_to_end_bookstore"
+version = "0.1.0"
+description = "End-to-end Python bookstore backend with UI and containerization"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "fastapi>=0.100.0",
+    "uvicorn[standard]>=0.23.0",
+    "sqlalchemy>=2.0.0",
+    "pydantic>=2.0.0",
+    "jinja2>=3.0.0",
+    "httpx>=0.28.0",
+    "pytest>=8.0.0"
+]
+
+[project.scripts]
+start = "app.main:run"
+
+[tool.black]
+line-length = 88

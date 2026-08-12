@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Bookstore</title>
+    <link rel="stylesheet" href="/static/styles.css" />
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Bookstore</h1>
+            <p>Browse books, add a new title, or use the REST API.</p>
+        </header>
+
+        <section class="book-list">
+            <h2>Available Books</h2>
+            <div class="grid">
+                {% for book in books %}
+                <article class="book-card">
+                    <h3>{{ book.title }}</h3>
+                    <p class="meta">{{ book.author }}</p>
+                    <p>{{ book.description }}</p>
+                    <p class="price">${{ '%.2f' | format(book.price) }}</p>
+                </article>
+                {% endfor %}
+            </div>
+        </section>
+
+        <section class="add-book">
+            <h2>Add a Book</h2>
+            <form action="/add" method="post">
+                <label for="title">Title</label>
+                <input id="title" name="title" required />
+
+                <label for="author">Author</label>
+                <input id="author" name="author" required />
+
+                <label for="description">Description</label>
+                <textarea id="description" name="description" rows="4" required></textarea>
+
+                <label for="price">Price</label>
+                <input id="price" name="price" type="number" step="0.01" required />
+
+                <button type="submit">Add Book</button>
+            </form>
+        </section>
+    </div>
+</body>
+</html>
