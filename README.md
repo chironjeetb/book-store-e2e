@@ -179,23 +179,82 @@ curl http://localhost:8000/health
 
 The GitHub Actions workflow automatically:
 
-1. **Linting** - Checks code style and formatting
-2. **Type Checking** - Validates type annotations
-3. **Security** - Scans for vulnerabilities
-4. **Testing** - Runs full test suite with coverage
-5. **Building** - Creates and publishes Docker image
+1. **Linting** - Checks code style with Ruff and Black
+2. **Type Checking** - Validates type annotations with MyPy
+3. **Security** - Scans for vulnerabilities with Bandit & pip-audit
+4. **Testing** - Runs full test suite with pytest and coverage
+5. **Coverage Upload** - Sends coverage reports to Codecov automatically
+6. **Docker Building** - Creates and publishes Docker images to GHCR
 
-Triggered on:
+### Pipeline Status
+[![CI/CD Pipeline](https://github.com/chironjeetb/book-store-e2e/actions/workflows/ci.yml/badge.svg)](https://github.com/chironjeetb/book-store-e2e/actions)
+[![codecov](https://codecov.io/gh/chironjeetb/book-store-e2e/branch/main/graph/badge.svg)](https://codecov.io/gh/chironjeetb/book-store-e2e)
+
+**Triggered on:**
 - Push to `main` or `develop` branches
 - Pull requests against `main` or `develop`
+- Manual workflow dispatch
+
+**View Details:**
+- 🔗 [GitHub Actions Workflow](https://github.com/chironjeetb/book-store-e2e/actions)
+- 🔗 [Codecov Dashboard](https://codecov.io/gh/chironjeetb/book-store-e2e)
 
 ## 📈 Code Coverage
 
-Current coverage: **95%+**
+Current coverage: **74%** and growing!
 
-- **Unit Tests**: 20+ tests covering all endpoints
-- **Integration Tests**: Form submission and database operations
-- **Edge Cases**: Invalid inputs, missing resources, etc.
+### Coverage by Module
+- `models.py`: 100% ✅
+- `schemas.py`: 100% ✅
+- `routes.py`: 100% ✅
+- `main.py`: 77% ✅
+- `views.py`: 49% 🎯
+- `database.py`: 41% 🎯
+
+### Generate Local Coverage Reports
+
+```bash
+# Generate HTML coverage report
+pytest --cov=app --cov-report=html --cov-report=term-missing
+
+# View in browser
+open htmlcov/index.html
+
+# Generate XML report (for CI/CD)
+pytest --cov=app --cov-report=xml
+```
+
+### Codecov Integration
+
+This project uses [Codecov](https://codecov.io) for automated coverage tracking and reporting.
+
+**View Coverage Reports:**
+- 📊 **Codecov Dashboard**: [codecov.io/gh/chironjeetb/book-store-e2e](https://codecov.io/gh/chironjeetb/book-store-e2e)
+- 📈 **Coverage Badge**: Shows in README (updates automatically)
+- 📉 **Branch Coverage**: Track coverage per branch
+- 🔔 **Pull Request Comments**: Codecov comments on PRs with coverage changes
+
+**How It Works:**
+1. GitHub Actions runs tests with `pytest --cov=app --cov-report=xml`
+2. Coverage report (`coverage.xml`) is generated
+3. Automatically uploaded to Codecov after successful build
+4. Coverage badge updates in real-time
+5. PR comments show coverage impact
+
+**Coverage Thresholds:**
+- Target: 80%+ overall coverage
+- API routes (`routes.py`): 100%
+- Models (`models.py`): 100%
+- Schemas (`schemas.py`): 100%
+
+### Testing Statistics
+- **Total Tests**: 14 tests
+- **Test Execution Time**: < 1 second
+- **Test Types**:
+  - ✅ Unit tests (API endpoints)
+  - ✅ Integration tests (database operations)
+  - ✅ View tests (HTML rendering)
+  - ✅ Model tests (ORM behavior)
 
 ## 🔒 Security
 
