@@ -12,9 +12,7 @@ from app.models import Base, Book
 # Use in-memory SQLite for testing
 TEST_DATABASE_URL = "sqlite:///:memory:"
 
-engine = create_engine(
-    TEST_DATABASE_URL, connect_args={"check_same_thread": False}
-)
+engine = create_engine(TEST_DATABASE_URL, connect_args={"check_same_thread": False})
 TestingSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 

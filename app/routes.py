@@ -47,9 +47,7 @@ def get_book(book_id: int, db: Session = Depends(get_db)) -> BookRead:
 
 
 @router.put("/books/{book_id}", response_model=BookRead)
-def update_book(
-    book_id: int, book: BookUpdate, db: Session = Depends(get_db)
-) -> BookRead:
+def update_book(book_id: int, book: BookUpdate, db: Session = Depends(get_db)) -> BookRead:
     """Update a book by ID."""
     db_book = db.query(Book).filter(Book.id == book_id).first()
     if not db_book:
