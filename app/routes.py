@@ -19,7 +19,7 @@ def list_books(db: Session = Depends(get_db)) -> list[BookRead]:
     """Get all books."""
     books = db.query(Book).all()
     logger.info(f"Retrieved {len(books)} books")
-    return books
+    return [BookRead.model_validate(book) for book in books]
 
 
 @router.post("/books", response_model=BookRead, status_code=status.HTTP_201_CREATED)

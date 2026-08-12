@@ -52,7 +52,7 @@ async def add_book_form(request: Request) -> RedirectResponse:
         form_data = await request.form()
 
         try:
-            price = float(form_data["price"])
+            price = float(str(form_data["price"]))
         except (ValueError, KeyError) as e:
             logger.error("Invalid price provided in form")
             raise HTTPException(
@@ -61,9 +61,9 @@ async def add_book_form(request: Request) -> RedirectResponse:
             ) from e
 
         book_data = BookCreate(
-            title=form_data["title"],
-            author=form_data["author"],
-            description=form_data["description"],
+            title=str(form_data["title"]),
+            author=str(form_data["author"]),
+            description=str(form_data["description"]),
             price=price,
         )
 

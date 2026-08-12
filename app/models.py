@@ -3,10 +3,10 @@
 from sqlalchemy import Column, Float, Integer, String
 from sqlalchemy.orm import declarative_base
 
-Base = declarative_base()
+Base = declarative_base()  # type: ignore[misc]
 
 
-class Book(Base):
+class Book(Base):  # type: ignore[valid-type,misc]
     """Book model."""
 
     __tablename__ = "books"
